@@ -9,24 +9,17 @@ namespace DNodeClient;
 class RpcDnodeClient {
 	private $etcd_host;
 	private $etcd_port;
-	
-	private static $_instance;
     
-    private function __construct($etcd_host="127.0.0.1",$etcd_port="4001"){
+    public  function __construct($etcd_host,$etcd_port){
        $this->etcd_host = $etcd_host;
        $this->etcd_port = $etcd_port;
     }
 
-    public static function etcd($etcd_host="127.0.0.1",$etcd_port="4001"){
-        if(self::$_instance == null){
-            self::$_instance = new self($etcd_host,$etcd_port);
-        }
-        return self::$_instance;            
+    public  function setEtcd($etcd_host,$etcd_port){
+        $this->etcd_host = $etcd_host;
+        $this->etcd_port = $etcd_port;        
     }
     
-    public static function getdata($name,$params){
-		$service = Service::init()->get($name,$params,$callback);
-	}
 	       
 	public function getSync($name,$params){		
 		try{
@@ -38,13 +31,13 @@ class RpcDnodeClient {
 		    $dnode = new \DNodeSync\DnodeSyncClient();		    
 		    $connection = $dnode->connect($bestHost['ip'], $bestHost['port']);
 		    $response = $connection->call($bestHost['call_name'], $params);
-		    return $response;
-		    
+		    return $response;		    
 	    }catch(\Exception $e){			
-		   var_dump($e->getMessage());
+		   error_log($e->getMessage());
 		   return false;
 		}			
 	}
+	
 	
 	public function get($name,$params,$callback){		
 		try{
@@ -62,8 +55,8 @@ class RpcDnodeClient {
 			});
 			$loop->run();
 	    }catch(\Exception $e){
-			$callback(false);
-		   //var_dump($e);	
+			error_log($e->getMessage());
+			$callback(false);	
 		}			
 	}
 	
