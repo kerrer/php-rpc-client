@@ -4,7 +4,7 @@
  *
  * @copyright 2012 erasys GmbH - see ./LICENSE.txt for more info
  */
-namespace DNodeSync;
+namespace DNodeClient;
 
 /**
  * Base class for all exceptions thrown by this library.
