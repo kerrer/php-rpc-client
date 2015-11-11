@@ -6,7 +6,7 @@
  */
 namespace DNodeClient;
 
-class Service {
+class RpcDnodeClient {
 	private $etcd_host;
 	private $etcd_port;
 	
@@ -35,7 +35,7 @@ class Service {
 				return false;
 			}
 
-		    $dnode = new DNodeSync\DnodeSyncClient();		    
+		    $dnode = new \DNodeSync\DnodeSyncClient();		    
 		    $connection = $dnode->connect($bestHost['ip'], $bestHost['port']);
 		    $response = $connection->call($bestHost['call_name'], $params);
 		    return $response;
@@ -52,8 +52,8 @@ class Service {
 			if($bestHost === false){
 				return false;
 			}
-			$loop = new React\EventLoop\StreamSelectLoop();
-		    $dnode = new DNode\DNode($loop);
+			$loop = new \React\EventLoop\StreamSelectLoop();
+		    $dnode = new \DNode\DNode($loop);
 			$dnode->connect($bestHost['ip'],$bestHost['port'], function($remote, $connection) use($bestHost,$params,$callback) { 
 				$remote->{$bestHost['call_name']}($params, function($n) use ($connection,$callback) {
 					$connection->end();
@@ -90,7 +90,7 @@ class Service {
 		$s_uri= "/services/projects/" . implode('/',$s);		
         $services = array();
 	
-		$client = new LinkORB\Component\Etcd\Client($etcd_uri);
+		$client = new \LinkORB\Component\Etcd\Client($etcd_uri);
 		$nodes = $client->getNode($s_uri);
 		foreach($nodes['nodes'] as $host){
 			$val = json_decode($host['value'],true);
